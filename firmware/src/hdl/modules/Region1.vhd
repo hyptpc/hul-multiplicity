@@ -40,9 +40,9 @@ architecture RTL of Region1 is
   signal reg_pwm_in   : std_logic_vector(kDpwmRegWidthSize-1 downto 0);
   signal reg_pwm_out  : std_logic_vector(kDpwmRegWidthSize-1 downto 0);
   signal reg_mul_out1 : std_logic_vector(kMultiplicityRegSize-1 downto 0);
-  signal reg_mul_out2 : std_logic_vector(kMultiplicityRegSize-1 downto 0);
-  signal reg_mul_out3 : std_logic_vector(kMultiplicityRegSize-1 downto 0);
-  signal reg_mul_out4 : std_logic_vector(kMultiplicityRegSize-1 downto 0);
+  -- signal reg_mul_out2 : std_logic_vector(kMultiplicityRegSize-1 downto 0);
+  -- signal reg_mul_out3 : std_logic_vector(kMultiplicityRegSize-1 downto 0);
+  -- signal reg_mul_out4 : std_logic_vector(kMultiplicityRegSize-1 downto 0);
   -- Selector --
   component Selector is
     port (
@@ -91,36 +91,37 @@ begin
       regMul   => reg_mul_out1,
       outDet   => outDet(0)
       );
-  u_MultiplexerOut2 : Multiplexer
-    port map (
-      clkTrg   => clkTrg,
-      clkSys   => clkSys,
-      reset    => reset,
-      inDet    => det_selected,
-      regWidth => reg_pwm_out,
-      regMul   => reg_mul_out2,
-      outDet   => outDet(1)
-      );
-  u_MultiplexerOut3 : Multiplexer
-    port map (
-      clkTrg   => clkTrg,
-      clkSys   => clkSys,
-      reset    => reset,
-      inDet    => det_selected,
-      regWidth => reg_pwm_out,
-      regMul   => reg_mul_out3,
-      outDet   => outDet(2)
-      );
-  u_MultiplexerOut4 : Multiplexer
-    port map (
-      clkTrg   => clkTrg,
-      clkSys   => clkSys,
-      reset    => reset,
-      inDet    => det_selected,
-      regWidth => reg_pwm_out,
-      regMul   => reg_mul_out4,
-      outDet   => outDet(3)
-      );
+
+  -- u_MultiplexerOut2 : Multiplexer
+  --   port map (
+  --     clkTrg   => clkTrg,
+  --     clkSys   => clkSys,
+  --     reset    => reset,
+  --     inDet    => det_selected,
+  --     regWidth => reg_pwm_out,
+  --     regMul   => reg_mul_out2,
+  --     outDet   => outDet(1)
+  --     );
+  -- u_MultiplexerOut3 : Multiplexer
+  --   port map (
+  --     clkTrg   => clkTrg,
+  --     clkSys   => clkSys,
+  --     reset    => reset,
+  --     inDet    => det_selected,
+  --     regWidth => reg_pwm_out,
+  --     regMul   => reg_mul_out3,
+  --     outDet   => outDet(2)
+  --     );
+  -- u_MultiplexerOut4 : Multiplexer
+  --   port map (
+  --     clkTrg   => clkTrg,
+  --     clkSys   => clkSys,
+  --     reset    => reset,
+  --     inDet    => det_selected,
+  --     regWidth => reg_pwm_out,
+  --     regMul   => reg_mul_out4,
+  --     outDet   => outDet(3)
+  --     );
 
   -- Bus process --
   u_BusProcess : process (clkSys, reset)
@@ -136,9 +137,9 @@ begin
           reg_pwm_in      <= "00001010"; -- 10 clock
           reg_pwm_out     <= "00001010"; -- 10 clock
           reg_mul_out1    <= "0000010"; -- multiplicity 2
-          reg_mul_out2    <= "0000011"; -- multiplicity 3
-          reg_mul_out3    <= "0000100"; -- multiplicity 4
-          reg_mul_out4    <= "0000101"; -- multiplicity 5
+          -- reg_mul_out2    <= "0000011"; -- multiplicity 3
+          -- reg_mul_out3    <= "0000100"; -- multiplicity 4
+          -- reg_mul_out4    <= "0000101"; -- multiplicity 5
           state_lbus      <= Idle;
         when Idle =>
           readyLocalBus <= '0';
@@ -175,12 +176,12 @@ begin
               reg_pwm_out(7 downto 0) <= dataLocalBusIn(7 downto 0);
             when kRGN1_MUL_DET_OUT1 =>
               reg_mul_out1(6 downto 0) <= dataLocalBusIn(6 downto 0);
-            when kRGN1_MUL_DET_OUT2 =>
-              reg_mul_out2(6 downto 0) <= dataLocalBusIn(6 downto 0);
-            when kRGN1_MUL_DET_OUT3 =>
-              reg_mul_out3(6 downto 0) <= dataLocalBusIn(6 downto 0);
-            when kRGN1_MUL_DET_OUT4 =>
-              reg_mul_out4(6 downto 0) <= dataLocalBusIn(6 downto 0);
+            -- when kRGN1_MUL_DET_OUT2 =>
+            --   reg_mul_out2(6 downto 0) <= dataLocalBusIn(6 downto 0);
+            -- when kRGN1_MUL_DET_OUT3 =>
+            --   reg_mul_out3(6 downto 0) <= dataLocalBusIn(6 downto 0);
+            -- when kRGN1_MUL_DET_OUT4 =>
+            --   reg_mul_out4(6 downto 0) <= dataLocalBusIn(6 downto 0);
             when others =>
               null;
           end case;
@@ -209,12 +210,12 @@ begin
               dataLocalBusOut <= reg_pwm_out(7 downto 0);
             when kRGN1_MUL_DET_OUT1(11 downto 4) =>
               dataLocalBusOut <= '0' & reg_mul_out1(6 downto 0);
-            when kRGN1_MUL_DET_OUT2(11 downto 4) =>
-              dataLocalBusOut <= '0' & reg_mul_out2(6 downto 0);
-            when kRGN1_MUL_DET_OUT3(11 downto 4) =>
-              dataLocalBusOut <= '0' & reg_mul_out3(6 downto 0);
-            when kRGN1_MUL_DET_OUT4(11 downto 4) =>
-              dataLocalBusOut <= '0' & reg_mul_out4(6 downto 0);
+            -- when kRGN1_MUL_DET_OUT2(11 downto 4) =>
+            --   dataLocalBusOut <= '0' & reg_mul_out2(6 downto 0);
+            -- when kRGN1_MUL_DET_OUT3(11 downto 4) =>
+            --   dataLocalBusOut <= '0' & reg_mul_out3(6 downto 0);
+            -- when kRGN1_MUL_DET_OUT4(11 downto 4) =>
+            --   dataLocalBusOut <= '0' & reg_mul_out4(6 downto 0);
             when others => dataLocalBusOut <= x"ff";
           end case;
           state_lbus <= Done;

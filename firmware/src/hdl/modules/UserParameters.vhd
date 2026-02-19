@@ -13,7 +13,7 @@ package addressmap is
   constant kNumOfMezzanineU : natural := 32;
   constant kNumOfMezzanineD : natural := 32;
   constant kNumOfNIMIN      : natural :=  4;
-  constant kNumOfNIMOUT     : natural :=  4;
+  constant kNumOfNIMOUT     : natural :=  1;
   constant kNumOfLED        : natural :=  4;
   constant kNumOfDipSwitch  : natural :=  8;
   -- Detector

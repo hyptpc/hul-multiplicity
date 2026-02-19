@@ -110,6 +110,12 @@ architecture Behavioral of toplevel is
   signal in_nim     : std_logic_vector(kNumOfNIMIN downto 1);
   signal sync_nimin : std_logic_vector(kNumOfNIMIN downto 1);
 
+  -- For debug work ------------------------------------------------------------------
+  -- Connect these signals to points you want to monitor
+  signal mon_1 : std_logic;
+  signal mon_2 : std_logic;
+  signal mon_3 : std_logic;
+
   -- Signals --
   signal gate            : std_logic;
   signal det_raw         : std_logic_vector(kNumOfSegDetector-1 downto 0);
@@ -378,9 +384,9 @@ begin
 
   -- NIMOUT/LEDOUT --
   NIMOUT(1) <= det_multiplexed(0) and gate;
-  NIMOUT(2) <= det_multiplexed(1) and gate;
-  NIMOUT(3) <= det_multiplexed(2) and gate;
-  NIMOUT(4) <= det_multiplexed(3) and gate;
+  NIMOUT(2) <= mon_1 and gate;
+  NIMOUT(3) <= mon_2 and gate;
+  NIMOUT(4) <= mon_3 and gate;
   LEDOUT(0) <= gate;
 
   -- J0DC --
