@@ -75,9 +75,9 @@ architecture Behavioral of Region1_test is
     signal I_sys_locked : std_logic;
 
     signal I_clk_trg    : std_logic;
-    signal I_clk_gtx    : std_logic;
-    signal I_clk_int    : std_logic;
-    signal I_clk_out4   : std_logic;
+    -- signal I_clk_gtx    : std_logic;
+    -- signal I_clk_int    : std_logic;
+    -- signal I_clk_out4   : std_logic;
     signal I_trg_locked : std_logic;
 
 begin
@@ -100,9 +100,9 @@ begin
     port map(
       clk_in1    => I_clk_in1,
       clk_trg    => I_clk_trg,
-      clk_gtx    => I_clk_gtx,
-      clk_int    => I_clk_int,
-      clk_out4   => I_clk_out4,
+      clk_gtx    => open,
+      clk_int    => open,
+      clk_out4   => open,
       reset      => I_reset,
       trg_locked => I_trg_locked
       );
@@ -124,14 +124,6 @@ begin
         I_reset <= '0';
         wait;
     end process proc_reset;
-
-    -- clk_gen :
-    -- process begin
-    --     I_clk_in1 <= '1';
-    --     wait for 10 ns;
-    --     I_clk_in1 <= '0';
-    --     wait for 10 ns;
-    -- end process clk_gen;
 
     clk_gen :
     process begin

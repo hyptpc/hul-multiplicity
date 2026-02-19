@@ -63,9 +63,9 @@ architecture Behavioral of mul_test is
     signal I_clk_in1    : std_logic := '0';
     signal I_reset      : std_logic := '1';
 
-    signal I_clk_gtx    : std_logic := '0';
-    signal I_clk_int    : std_logic := '0';
-    signal I_clk_out4   : std_logic := '0';
+    -- signal I_clk_gtx    : std_logic := '0';
+    -- signal I_clk_int    : std_logic := '0';
+    -- signal I_clk_out4   : std_logic := '0';
 
     signal I_trg_locked : std_logic := '0';
     signal I_sys_locked : std_logic := '0';
@@ -86,9 +86,9 @@ architecture Behavioral of mul_test is
     port map(
         clk_in1    => I_clk_in1,
         clk_trg    => I_clk_trg,
-        clk_gtx    => I_clk_gtx,
-        clk_int    => I_clk_int,
-        clk_out4   => I_clk_out4,
+        clk_gtx    => open,
+        clk_int    => open,
+        clk_out4   => open,
         reset      => I_reset,
         trg_locked => I_trg_locked
       );
