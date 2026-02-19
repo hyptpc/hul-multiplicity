@@ -1,0 +1,74 @@
+###############################################################################
+#                                                                             #
+#  Region2_4 Coin1                                                            #
+#                                                                             #
+###############################################################################
+RGN2_4::Delay_Beam            1
+RGN2_4::Delay_SAC            11
+RGN2_4::Delay_TOF            13
+RGN2_4::Delay_LC             11
+RGN2_4::Delay_TOF_HT         13
+RGN2_4::Delay_Other4         15
+RGN2_4::Delay_Other5         11
+                              
+RGN2_4::Width_Beam            1
+RGN2_4::Width_SAC             8
+RGN2_4::Width_TOF             8
+RGN2_4::Width_LC              8
+RGN2_4::Width_TOF_HT         12
+RGN2_4::Width_Other4          8
+RGN2_4::Width_Other5          8
+                         
+Coin1_Beam                    1     ## Veto->0, On ->1, Off->2 ##
+Coin1_SAC                     2     ## Veto->0, On ->1, Off->2 ##
+Coin1_TOF                     1     ## Veto->0, On ->1, Off->2 ##
+Coin1_LC                      2     ## Veto->0, On ->1, Off->2 ##
+Coin1_TOF_HT                  1     ## Veto->0, On ->1, Off->2 ##
+Coin1_Other4                  1     ## Veto->0, On ->1, Off->2 ##
+Coin1_Other5                  2     ## Veto->0, On ->1, Off->2 ##
+
+###############################################################################
+#                                                                             #
+#  Region2_6 E03                                                              #
+#                                                                             #
+###############################################################################
+RGN2_6::Delay_Beam_E03        1
+RGN2_6::Delay_Other1_E03      1
+RGN2_6::Delay_Other2_E03      1
+RGN2_6::Delay_Other3_E03      1
+RGN2_6::Delay_Other4_E03      1
+RGN2_6::Delay_Other5_E03      1
+                        
+RGN2_6::Width_Beam_E03        8
+RGN2_6::Width_Other1_E03      8
+RGN2_6::Width_Other2_E03      8
+RGN2_6::Width_Other3_E03      8
+RGN2_6::Width_Other4_E03      8
+RGN2_6::Width_Other5_E03      8
+                         
+Coin_Beam_E03                 2     ## Veto->0, On ->1, Off->2 ##
+Coin_Other1_E03               2     ## Veto->0, On ->1, Off->2 ##
+Coin_Other2_E03               2     ## Veto->0, On ->1, Off->2 ##
+Coin_Other3_E03               2     ## Veto->0, On ->1, Off->2 ##
+Coin_Other4_E03               2     ## Veto->0, On ->1, Off->2 ##
+Coin_Other5_E03               2     ## Veto->0, On ->1, Off->2 ##
+
+
+###############################################################################
+#                                                                             #
+#  Region3 Else OR PreScale                                                   #
+#                                                                             #
+###############################################################################
+RGN3::Delay_PS_OR                  1
+                         
+RGN3::Delay_all_Else_OR            1    //  Else_Or  
+RGN3::Width_Else_OR               12 
+RGN3::Delay_part_Else_OR           3    // Else_Or Only 
+                       
+#Real Value
+RGN3::Delay_K_Scat                 1    #KScat pre  
+RGN3::Width_K_Scat                31    #KScat pre
+
+#BH2_K's Value
+#RGN3::Delay_K_Scat                 1     
+#RGN3::Width_K_Scat                11   
