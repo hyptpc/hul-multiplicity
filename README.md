@@ -30,7 +30,11 @@ The project generation script will automatically detect files in this subdirecto
 
 ## Project Generation
 
+as following gif
+
 ![howtoopen](https://github.com/user-attachments/assets/a3aba21f-9425-4395-ad71-5e0e5e794edb)
+
+OR
 
 1.  Open Vivado.
 2.  Open **Tcl Console** from the bottom panel.
