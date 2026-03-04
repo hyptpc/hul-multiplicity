@@ -68,6 +68,13 @@ architecture RTL of Region1 is
       );
   end component;
 
+      -- 2026/03/01 For avoid Path sharing
+      attribute dont_touch : string;
+      attribute dont_touch of u_MultiplexerOut1 : label is "true";
+      attribute dont_touch of u_MultiplexerOut2 : label is "true";
+      attribute dont_touch of u_MultiplexerOut3 : label is "true";
+      attribute dont_touch of u_MultiplexerOut4 : label is "true";
+
 begin
   -- Selector --
   u_Selector : Selector
@@ -121,6 +128,7 @@ begin
       regMul   => reg_mul_out4,
       outDet   => outDet(3)
       );
+
 
   -- Bus process --
   u_BusProcess : process (clkSys, reset)

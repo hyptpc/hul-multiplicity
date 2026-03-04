@@ -64,10 +64,10 @@ create_clock -name phy_rx_clk -period 8.000 [get_ports PHY_RX_CLK]
 
 # --- Generated clocks from clk_wiz_0 ---
 
-# clk_trg (200MHz)
+# clk_trg (400MHz)
 create_generated_clock -name clk_trg \
   -source [get_pins u_ClkMan_Trg_Inst/inst/mmcm_adv_inst/CLKIN1] \
-  -multiply_by 4 \
+  -multiply_by 8 \
   [get_pins u_ClkMan_Trg_Inst/inst/mmcm_adv_inst/CLKOUT0]
 
 # clk_gtx (125MHz)

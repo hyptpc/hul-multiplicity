@@ -77,10 +77,24 @@ architecture RTL of Multiplexer is
   ----------------------------------------------------------------
   -- 8bit popcount (0..8)
   ----------------------------------------------------------------
-  function popcount8(slv : std_logic_vector(7 downto 0)) return unsigned is
-    variable c : unsigned(3 downto 0) := (others => '0');
+  -- function popcount8(slv : std_logic_vector(7 downto 0)) return unsigned is
+  --   variable c : unsigned(3 downto 0) := (others => '0');
+  -- begin
+  --   for i in 0 to 7 loop
+  --     if slv(i) = '1' then
+  --       c := c + 1;
+  --     end if;
+  --   end loop;
+  --   return c;
+  -- end function;
+
+  ----------------------------------------------------------------
+  -- 4bit popcount (0..4)
+  ----------------------------------------------------------------
+  function popcount4(slv : std_logic_vector(3 downto 0)) return unsigned is
+    variable c : unsigned(2 downto 0) := (others => '0');
   begin
-    for i in 0 to 7 loop
+    for i in 0 to 3 loop
       if slv(i) = '1' then
         c := c + 1;
       end if;
@@ -92,18 +106,27 @@ architecture RTL of Multiplexer is
   -- Split settings (* CHUNK used instead of GROUP as it is a reserved word)
   ----------------------------------------------------------------
   constant NSEG   : integer := kNumOfSegDetector;     -- e.g., 64
-  constant CHUNK  : integer := 8;                     -- Count every 8 bits
-  constant NCHUNK : integer := NSEG / CHUNK;          -- e.g., 8
+  constant CHUNK  : integer := 4;                     -- Count every 4 bits
+  constant NCHUNK : integer := NSEG / CHUNK;          -- 16
   constant WSUM   : integer := kMultiplicityRegSize;  -- Bit width of sum/threshold
   -- assert (NSEG mod CHUNK = 0) report "NSEG must be multiple of CHUNK" severity FAILURE;
 
   ----------------------------------------------------------------
   -- Signals for pipeline
   ----------------------------------------------------------------
-  type u4_vec is array (natural range <>) of unsigned(3 downto 0);
-  signal s0_cnt   : u4_vec(0 to NCHUNK-1);                 -- Stage 1: Number of set bits in 8 lines (comb)
+  type u4_vec is array (natural range <>) of unsigned(2 downto 0);
+  type sum_vec is array (natural range <>) of unsigned(WSUM-1 downto 0);
+  
+  signal s0_cnt   : u4_vec(0 to NCHUNK-1);                 -- Stage 1: Number of set bits in 4 lines (comb)
   signal s0_reg   : u4_vec(0 to NCHUNK-1);                 -- 1-cycle register for above
-  signal sum1     : unsigned(WSUM-1 downto 0);             -- Summation (comb)
+  
+  -- Tree adder pipeline stages
+  signal sum_tree_s1     : sum_vec(0 to NCHUNK/4-1);       -- 4 values after 1st add stage (comb)
+  signal sum_tree_s1_r   : sum_vec(0 to NCHUNK/4-1);       -- 1-cycle register
+  signal sum_tree_s2     : unsigned(WSUM-1 downto 0);      -- 2 values after 2nd add stage (comb)
+  
+  --signal sum1     : unsigned(WSUM-1 downto 0);             -- Summation result (registered)
+  signal sum1_tmp : unsigned(WSUM-1 downto 0);             -- Temporary variable for summation
   signal regMul_d : unsigned(WSUM-1 downto 0);             -- 1-cycle delay for threshold
 begin
   ----------------------------------------------------------------
@@ -123,7 +146,7 @@ begin
   -- 1) Popcount for every 8 bits (combinatorial)
   ----------------------------------------------------------------
   gen_pc : for g in 0 to NCHUNK-1 generate
-    s0_cnt(g) <= popcount8( inDet(g*CHUNK + CHUNK-1 downto g*CHUNK) );
+    s0_cnt(g) <= popcount4( inDet(g*CHUNK + CHUNK-1 downto g*CHUNK) );
   end generate;
 
   ----------------------------------------------------------------
@@ -135,27 +158,33 @@ begin
       for g in 0 to NCHUNK-1 loop
         s0_reg(g) <= (others => '0');
       end loop;
-      regMul_d <= (others => '0');
     elsif rising_edge(clkTrg) then
       for g in 0 to NCHUNK-1 loop
         s0_reg(g) <= s0_cnt(g);
       end loop;
-      regMul_d <= unsigned(regMul);      -- Delay threshold by same amount
     end if;
   end process;
 
   ----------------------------------------------------------------
-  -- 3) Summation (combinatorial)
+  -- 3) Summation tree with pipelined binary tree (fast parallel)
   ----------------------------------------------------------------
-  sum_tree : process(s0_reg)
-    variable tmp : unsigned(WSUM-1 downto 0);
+  -- Stage 1: First level of additions (16 -> 4 values)
+  gen_sum_tree_s1 : for g in 0 to NCHUNK/4-1 generate
+    sum_tree_s1(g) <= resize(s0_reg(4*g), WSUM) + resize(s0_reg(4*g+1), WSUM) + resize(s0_reg(4*g+2), WSUM) + resize(s0_reg(4*g+3), WSUM);
+  end generate;
+
+  -- Register stage 1 for pipelining
+  stage1_pipe : process(clkTrg, reset)
   begin
-    tmp := (others => '0');
-    for g in 0 to NCHUNK-1 loop
-      tmp := tmp + resize(s0_reg(g), WSUM);
-    end loop;
-    sum1 <= tmp;
+    if reset = '1' then
+      sum_tree_s1_r <= (others => (others => '0'));
+    elsif rising_edge(clkTrg) then
+      sum_tree_s1_r <= sum_tree_s1;
+    end if;
   end process;
+
+  -- Stage 2: Second level of additions (4 -> 1 values)
+  sum_tree_s2 <= sum_tree_s1_r(0) + sum_tree_s1_r(1) + sum_tree_s1_r(2) + sum_tree_s1_r(3);
 
   ----------------------------------------------------------------
   -- 4) Compare and register (Output delayed by +1 cycle)
@@ -163,9 +192,14 @@ begin
   u_MultiplexProcess : process (clkTrg, reset)
   begin
     if reset = '1' then
+      regMul_d <= (others => '0');
       det_multiplexed <= '0';
+      sum1_tmp <= (others => '0');
     elsif rising_edge(clkTrg) then
-      if (sum1 >= regMul_d) then
+      -- 1 PP
+      sum1_tmp <= sum_tree_s2;
+      regMul_d <= unsigned(regMul);
+      if (sum1_tmp >= regMul_d) then
         det_multiplexed <= '1';
       else
         det_multiplexed <= '0';

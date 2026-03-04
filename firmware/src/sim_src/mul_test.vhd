@@ -126,11 +126,11 @@ architecture Behavioral of mul_test is
             wait for 10 ns;
             I_inDet <= x"0000_0000_0000_0000";
             wait for 20 ns;
-            I_inDet <= x"0000_0000_0000_0003";
+            I_inDet <= x"0000_0000_0001_0001";
             wait for 10 ns;
             I_inDet <= x"0000_0000_0000_0000";
             wait for 20 ns;
-            I_inDet <= x"0000_0000_0000_0007";
+            I_inDet <= x"0001_0000_0000_0001";
             wait for 10 ns;
             I_inDet <= x"0000_0000_0000_0000";
             wait for 10 ns;
