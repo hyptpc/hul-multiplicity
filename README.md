@@ -1,4 +1,4 @@
-# HUL Multiplicity Logic Firmware
+# HUL Multiplicity Logic Firmware (Under Development)
 
 Firmware for HUL Multiplicity Logic board (Kintex-7).
 
