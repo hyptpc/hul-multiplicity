@@ -50,6 +50,7 @@ begin
       out1  => edge
       );
 
+  --Previous code
   -- u_CountProcess : process(clkTrg, reset)
   -- begin
   --   if (reset = '1') then
