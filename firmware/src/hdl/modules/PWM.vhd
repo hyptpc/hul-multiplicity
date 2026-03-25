@@ -50,22 +50,42 @@ begin
       out1  => edge
       );
 
-  u_CountProcess : process(clkTrg, reset)
-  begin
-    if (reset = '1') then
-      out1 <= '0';
-      counter <= (others => '0');
-    elsif (clkTrg'event and clkTrg ='1') then
-      if (edge = '1') then
-        out1 <= '1';
-        counter <= counter + 1;
-      elsif (counter = counter_max) then
+  -- u_CountProcess : process(clkTrg, reset)
+  -- begin
+  --   if (reset = '1') then
+  --     out1 <= '0';
+  --     counter <= (others => '0');
+  --   elsif (clkTrg'event and clkTrg ='1') then
+  --     if (edge = '1') then
+  --       out1 <= '1';
+  --       counter <= counter + 1;
+  --     elsif (counter = counter_max) then
+  --       out1 <= '0';
+  --       counter <= (others => '0');
+  --     elsif (counter /= "00000000") then
+  --       out1 <= '1';
+  --       counter <= counter + 1;
+  --     end if;
+  --   end if;
+  -- end process;
+
+    -- Modified code
+    u_CountProcess : process(clkTrg, reset)
+    begin
+      if (reset = '1') then
         out1 <= '0';
         counter <= (others => '0');
-      elsif (counter /= "00000000") then
-        out1 <= '1';
-        counter <= counter + 1;
+      elsif (clkTrg'event and clkTrg ='1') then
+        if (counter = counter_max) then
+          out1 <= '0';
+          counter <= (others => '0');
+        elsif (edge = '1') then
+          out1 <= '1';
+          counter <= counter + 1;
+        elsif (counter /= "00000000") then
+          out1 <= '1';
+          counter <= counter + 1;
+        end if;
       end if;
-    end if;
-  end process;
+    end process;
 end RTL;

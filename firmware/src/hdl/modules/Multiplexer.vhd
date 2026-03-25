@@ -143,7 +143,7 @@ begin
     );
 
   ----------------------------------------------------------------
-  -- 1) Popcount for every 8 bits (combinatorial)
+  -- 1) Popcount for every 4 bits (combinatorial)
   ----------------------------------------------------------------
   gen_pc : for g in 0 to NCHUNK-1 generate
     s0_cnt(g) <= popcount4( inDet(g*CHUNK + CHUNK-1 downto g*CHUNK) );
@@ -168,7 +168,7 @@ begin
   ----------------------------------------------------------------
   -- 3) Summation tree with pipelined binary tree (fast parallel)
   ----------------------------------------------------------------
-  -- Stage 1: First level of additions (16 -> 4 values)
+  -- Stage 1: First level of additions (4 -> 1 values)
   gen_sum_tree_s1 : for g in 0 to NCHUNK/4-1 generate
     sum_tree_s1(g) <= resize(s0_reg(4*g), WSUM) + resize(s0_reg(4*g+1), WSUM) + resize(s0_reg(4*g+2), WSUM) + resize(s0_reg(4*g+3), WSUM);
   end generate;

@@ -56,7 +56,7 @@ architecture Behavioral of mul_test is
     signal I_clk_sys   : std_logic := '0';
     signal I_pwon_reset     : std_logic := '1';
     signal I_inDet     : std_logic_vector(63 downto 0) := (others => '0');
-    signal I_regMul    : std_logic_vector(6 downto 0) := "0000010"; -- Mp2
+    signal I_regMul    : std_logic_vector(6 downto 0) := "1000000"; -- Mp64
     signal I_regWidth  : std_logic_vector(7 downto 0) := "00001010"; -- 10 clocks
     signal I_outDet    : std_logic := '0';
 
@@ -126,11 +126,11 @@ architecture Behavioral of mul_test is
             wait for 10 ns;
             I_inDet <= x"0000_0000_0000_0000";
             wait for 20 ns;
-            I_inDet <= x"0000_0000_0001_0001";
+            I_inDet <= x"ffff_ffff_ffff_ffff";
             wait for 10 ns;
             I_inDet <= x"0000_0000_0000_0000";
             wait for 20 ns;
-            I_inDet <= x"0001_0000_0000_0001";
+            I_inDet <= x"ffff_ffff_feff_ffff";
             wait for 10 ns;
             I_inDet <= x"0000_0000_0000_0000";
             wait for 10 ns;

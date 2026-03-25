@@ -327,6 +327,7 @@ begin
   dtl_u      <= in_fixed_u;
   dtl_d      <= in_fixed_d;
 
+
   gen_NimIn : for i in 1 to kNumOfNIMIN generate
     u_Sync_NimIn : Synchronizer
       port map (clock=>clk_400MHz, in1=>in_nim(i), out1=>sync_nimin(i));
@@ -344,7 +345,7 @@ begin
   det_raw(kNumOfFixedU-1 downto 0) <= sync_fixed_u(kNumOfFixedU-1 downto 0);
   det_raw(kNumOfSegDetector-1 downto kNumOfFixedU) <=
     sync_fixed_d(kNumOfFixedD-1 downto 0);
-  gate <= sync_nimin(1) when (dip_sw(kDipGate.Index) = '1') else '1';
+  gate <= sync_nimin(1) when (dip_sw(kDipGate.Index) = '1') else '1'; --kDipGate = 1
 
   -- Region1 --
   u_Region1_Inst : Region1
